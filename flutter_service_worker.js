@@ -59,7 +59,7 @@ self.addEventListener('fetch', event => {
         });
     }).catch(error => {
       console.log('Error, ', error);
-      return caches.match('pages/offline.html');
+      return caches.match('pages/404.html');
     })
   );
 });
