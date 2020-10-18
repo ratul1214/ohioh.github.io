@@ -1,72 +1,119 @@
-const staticCacheName = 'OHIOH-static-v1';
-var dynamicCacheName = 'OHIOH-dynamic-v1';
+var deferredPrompt;
+var enableNotificationsButtons = document.querySelectorAll('.enable-notifications');
 
-const filesToCache = [
-  '/',
-  'index.html',
-];
+if (!window.Promise) {
+    window.Promise = Promise;
+}
 
-
-self.addEventListener('install', event => {
-  console.log('Attempting to install service worker and cache static assets');
-  event.waitUntil(
-    caches.open(staticCacheName)
-    .then(cache => {
-      return cache.addAll(filesToCache);
-    })
-  );
-});
-
-
-self.addEventListener('activate', event => {
-  console.log('Activating new service worker...');
-
-  const cacheWhitelist = [staticCacheName];
-
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('serviceWorkerRegistration.js')
+        .then(function () {
+            console.log('Service worker registered!');
         })
-      );
-    })
-  );
-});
-
-self.addEventListener('fetch', event => {
-  console.log('Fetch event for ', event.request.url);
-  event.respondWith(
-    caches.match(event.request)
-    .then(response => {
-      if (response) {
-        console.log('Found ', event.request.url, ' in cache');
-        return response;
-      }
-      console.log('Network request for ', event.request.url);
-      return fetch(event.request)
-        .then(response => {
-          if (response.status === 404) {
-            return caches.match('pages/404.html');
-          }
-          return caches.open(staticCacheName)
-            .then(cache => {
-              cache.put(event.request.url, response.clone());
-              return response;
-            });
+        .catch(function (err) {
+            console.log(err);
         });
-    }).catch(error => {
-      console.log('Error, ', error);
-      return caches.match('pages/404.html');
-    })
-  );
+}
+
+window.addEventListener('beforeinstallprompt', function (event) {
+    console.log('beforeinstallprompt fired');
+    event.preventDefault();
+    deferredPrompt = event;
+    return false;
 });
 
-self.addEventListener('notificationclose', event => {
-  const notification = event.notification;
-  const primaryKey = notification.data.primaryKey;
+function displayConfirmNotification() {
+    if ('serviceWorker' in navigator) {
+        var options = {
+            body: 'You successfully subscribed to our Notification service!',
+            icon: 'icons/Icon-192.png',
+            image: 'icons/Icon-192.png',
+            dir: 'ltr',
+            lang: 'de', // BCP 47,
+            vibrate: [100, 50, 200],
+            badge: 'icons/Icon-192.png',
+            tag: 'confirm-notification',
+            renotify: true,
+            actions: [{
+                    action: 'confirm',
+                    title: 'Okay',
+                    icon: 'icons/Icon-192.png'
+                },
+                {
+                    action: 'cancel',
+                    title: 'Cancel',
+                    icon: 'src/images/icons/app-icon-96x96.png'
+                }
+            ]
+        };
 
-  console.log('Closed notification: ' + primaryKey);
-});
+        navigator.serviceWorker.ready
+            .then(function (swreg) {
+                swreg.showNotification('Successfully subscribed!', options);
+            });
+    }
+}
+
+function configurePushSub() {
+    if (!('serviceWorker' in navigator)) {
+        return;
+    }
+
+    var reg;
+    navigator.serviceWorker.ready
+        .then(function (swreg) {
+            reg = swreg;
+            return swreg.pushManager.getSubscription();
+        })
+        .then(function (sub) {
+            if (sub === null) {
+                // Create a new subscription
+                var vapidPublicKey = 'BKapuZ3XLgt9UZhuEkodCrtnfBo9Smo-w1YXCIH8YidjHOFAU6XHpEnXefbuYslZY9vtlEnOAmU7Mc-kWh4gfmE';
+                var convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey);
+                return reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: convertedVapidPublicKey
+                });
+            } else {
+                // We have a subscription
+            }
+        })
+        .then(function (newSub) {
+            return fetch('https://pwagram-99adf.firebaseio.com/subscriptions.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(newSub)
+            })
+        })
+        .then(function (res) {
+            if (res.ok) {
+                displayConfirmNotification();
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+function askForNotificationPermission() {
+    Notification.requestPermission(function (result) {
+        console.log('User Choice', result);
+        if (result !== 'granted') {
+            console.log('No notification permission granted!');
+        } else {
+            configurePushSub();
+            // displayConfirmNotification();
+        }
+    });
+}
+
+if ('Notification' in window && 'serviceWorker' in navigator) {
+    for (var i = 0; i < enableNotificationsButtons.length; i++) {
+        enableNotificationsButtons[i].style.display = 'inline-block';
+        enableNotificationsButtons[i].addEventListener('click', askForNotificationPermission);
+    }
+}
