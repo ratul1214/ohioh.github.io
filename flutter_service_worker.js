@@ -54,3 +54,4 @@ self.addEventListener('fetch', function(event) {
   console.log('[OHIOH]👍 ServiceWorker is fetching.',event);
   event.respondWith(fetch(event.request));
 })
+
