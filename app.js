@@ -53,7 +53,7 @@ window.addEventListener('beforeinstallprompt', function (event) {
     // Prevent Chrome 67 and earlier from automatically showing the prompt
   //event.preventDefault();
     // Stash the event so it can be triggered later.
-  window.deferredPrompt = event;
+  //window.deferredPrompt = event;
     // Update UI notify the user they can install the PWA
   showAddToHomeScreen();
   // Remove the 'hidden' class from the install button container
