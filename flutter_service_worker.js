@@ -1,4 +1,3 @@
-
 var CACHE_STATIC_NAME = 'static-v2';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 
