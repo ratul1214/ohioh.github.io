@@ -1,6 +1,6 @@
 
-var CACHE_STATIC_NAME = 'static-v1';
-var CACHE_DYNAMIC_NAME = 'dynamic-v1';
+var CACHE_STATIC_NAME = 'static-v2';
+var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 
 self.addEventListener('install', function(event) {
   console.log('[OHIOH]: Installing ServiceWorker...',event);
@@ -12,7 +12,7 @@ self.addEventListener('install', function(event) {
           '/',
           '/index.html',
           '/main.dart',
-          'offline.html'
+          '/offline.html'
         ]);
       })
   )
