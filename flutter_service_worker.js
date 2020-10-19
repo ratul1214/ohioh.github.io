@@ -1,6 +1,6 @@
 
-var CACHE_STATIC_NAME = 'static-v2';
-var CACHE_DYNAMIC_NAME = 'dynamic-v1';
+var CACHE_STATIC_NAME = 'static-v0';
+var CACHE_DYNAMIC_NAME = 'dynamic-v0';
 
 self.addEventListener('install', function(event) {
   console.log('[OHIOH]: Installing ServiceWorker...',event);
@@ -12,6 +12,7 @@ self.addEventListener('install', function(event) {
           '/',
           '/index.html',
           '/main.dart',
+          'offline.html'
         ]);
       })
   )
@@ -52,7 +53,10 @@ self.addEventListener('fetch', function(event) {
                 });
             })
             .catch(function(err) {
-
+              return caches.open(CACHE_STATIC_NAME)
+                .then(function (cache) {
+                  return cache.match('/offline.html');
+                  });
             });
         }
       })
