@@ -46,7 +46,7 @@ self.addEventListener("activate", function (event) {
         caches.keys().then(function (cacheNames) {
             return Promise.all(
                 cacheNames.map(function (cacheName) {
-                    if (CACHE_NAME !== cacheName && cacheName.startsWith("vid-voter")) {
+                    if (CACHE_NAME !== cacheName && cacheName.startsWith("OHIOH")) {
                         return caches.delete(cacheName);
                     }
                 })
