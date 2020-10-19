@@ -16,8 +16,9 @@
 // });
 
 var deferredPrompt; //before install needed
+var _beforeInstallPrompt;
 
-function showAddToHomeScreen() { var a2hsBtn = document.querySelector(".ad2hs-prompt"); a2hsBtn.style.display = "block"; a2hsBtn.addEventListener("click", addToHomeScreen); }
+// function showAddToHomeScreen() { var a2hsBtn = document.querySelector(".ad2hs-prompt"); a2hsBtn.style.display = "block"; a2hsBtn.addEventListener("click", addToHomeScreen); }
 //function addToHomeScreen() { var a2hsBtn = document.querySelector(".ad2hs-prompt"); // hide our user interface that shows our A2HS button a2hsBtn.style.display = 'none'; // Show the prompt deferredPrompt.prompt(); // Wait for the user to respond to the prompt deferredPrompt.userChoice .then(function(choiceResult){ if (choiceResult.outcome === 'accepted') { console.log('User accepted the A2HS prompt'); } else { console.log('User dismissed the A2HS prompt'); } deferredPrompt = null; }); }
 
 // if ('serviceWorker' in navigator) {
@@ -35,24 +36,45 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+if ( "onbeforeinstallprompt" in window ) {
+window.addEventListener( "beforeinstallprompt", beforeInstallPrompt );
+}
 
-
-btnAdd.addEventListener('click', (e) => {
-  // hide our user interface that shows our A2HS button
-  btnAdd.style.display = 'none';
-  // Show the prompt
-  deferredPrompt.prompt();
-  // Wait for the user to respond to the prompt
-  deferredPrompt.userChoice
-    .then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt');
-      } else {
-        console.log('User dismissed the A2HS prompt');
-      }
-      deferredPrompt = null;
-    });
+function beforeInstallPrompt( evt ) {
+evt.preventDefault(); _beforeInstallPrompt = evt;
+return _beforeInstallPrompt.prompt()
+.then( function ( evt ) {
+// Wait for the user to respond to the prompt
+return _beforeInstallPrompt.userChoice; } )
+ .then( function ( choiceResult ) { //do stuff here
+} )
+.catch( function ( err ) { if ( err.message.indexOf( "user gesture" ) > -1 ) {
+//recycle, but make sure there is a user gesture involved
+} else if ( err.message.indexOf( "The app is already installed" ) > -1 ) {
+//the app is installed, no need to prompt, but you may need to log or update state values
+} else {
+return err;
+}
 });
+}
+
+
+// btnAdd.addEventListener('click', (e) => {
+//   // hide our user interface that shows our A2HS button
+//   btnAdd.style.display = 'none';
+//   // Show the prompt
+//   deferredPrompt.prompt();
+//   // Wait for the user to respond to the prompt
+//   deferredPrompt.userChoice
+//     .then((choiceResult) => {
+//       if (choiceResult.outcome === 'accepted') {
+//         console.log('User accepted the A2HS prompt');
+//       } else {
+//         console.log('User dismissed the A2HS prompt');
+//       }
+//       deferredPrompt = null;
+//     });
+// });
 
 
 window.addEventListener('beforeinstallprompt', function (event) {
@@ -73,4 +95,5 @@ window.addEventListener('beforeinstallprompt', function (event) {
 window.addEventListener('appinstalled', (event) => {
   console.log('👍', 'appinstalled', event);
 });
+
 
