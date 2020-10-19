@@ -1,4 +1,4 @@
-const CACHE_NAME = 'OHIOH-Cache-v1'
+const CACHE_NAME = 'OHIOH-Cache-v0';
 const URLS_CACHE_ONLY = [
     "/",
     "/index.html",
