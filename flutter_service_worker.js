@@ -40,6 +40,25 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim();
 });
 
+self.addEventListener('fetch', function (event) {
+    event.respondWith(
+        caches.open(CACHE_NAME)
+            .then(function(cache) {
+                cache.match(event.request)
+                    .then( function(cacheResponse) {
+                        if(cacheResponse)
+                            return cacheResponse
+                        else
+                            return fetch(event.request)
+                                .then(function(networkResponse) {
+                                    cache.put(event.request, networkResponse.clone())
+                                    return networkResponse
+                                })
+                    })
+            })
+    )
+});
+
 self.addEventListener("fetch", function (event) {
     const requestURL = new URL(event.request.url);
 
