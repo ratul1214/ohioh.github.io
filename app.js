@@ -20,13 +20,21 @@ var deferredPrompt; //before install needed
 function showAddToHomeScreen() { var a2hsBtn = document.querySelector(".ad2hs-prompt"); a2hsBtn.style.display = "block"; a2hsBtn.addEventListener("click", addToHomeScreen); }
 //function addToHomeScreen() { var a2hsBtn = document.querySelector(".ad2hs-prompt"); // hide our user interface that shows our A2HS button a2hsBtn.style.display = 'none'; // Show the prompt deferredPrompt.prompt(); // Wait for the user to respond to the prompt deferredPrompt.userChoice .then(function(choiceResult){ if (choiceResult.outcome === 'accepted') { console.log('User accepted the A2HS prompt'); } else { console.log('User dismissed the A2HS prompt'); } deferredPrompt = null; }); }
 
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker
+//     .register('/flutter_service_worker.js')
+//     .then(function() {
+//       console.log("[OHIOH]: ServiceWorker is registered.")
+//     });
+// }
+
+
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('/flutter_service_worker.js')
-    .then(function() {
-      console.log("[OHIOH]: ServiceWorker is registered.")
-    });
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/flutter_service_worker.js');
+  });
 }
+
 
 
 btnAdd.addEventListener('click', (e) => {
