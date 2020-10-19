@@ -19,7 +19,6 @@ self.addEventListener("install", function(event) {
              URLS_CACHE_ONLY.concat(URLS_OVER_NETWORK_WITH_CACHE_FALLBACK)
             );
         }).catch((err) => {
-            console.log(err);
             return new Promise((resolve, reject) => {
                 reject('ERROR: ' + err);
             });
