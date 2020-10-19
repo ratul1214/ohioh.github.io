@@ -1,13 +1,15 @@
-const CACHE_NAME = 'OHIOH-Cache-v0'
+const CACHE_NAME = 'OHIOH-Cache-v1'
 const URLS_CACHE_ONLY = [
+    "/",
+    "/index.html",
+    "/offline.html"
     // css and js
     // font-awesome
 
 ];
 
 const URLS_OVER_NETWORK_WITH_CACHE_FALLBACK = [
-    "/index.html",
-    "/offline.html"
+
 ];
 
 self.addEventListener("install", function(event) {
