@@ -64,13 +64,6 @@ if ('serviceWorker' in navigator) {
   console.log('[OHIOH]:Service Worker registered.');
 }
 
-button.addEventListener('click', function(event) {
-  if (box.classList.contains('visible')) {
-    box.classList.remove('visible');
-  } else {
-    box.classList.add('visible');
-  }
-});
 
 // btnAdd.addEventListener('click', (e) => {
 //   // hide our user interface that shows our A2HS button
