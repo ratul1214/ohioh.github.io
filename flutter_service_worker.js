@@ -1,5 +1,6 @@
-var CACHE_STATIC_NAME = 'static-v3';
-var CACHE_DYNAMIC_NAME = 'dynamic-v3';
+
+var CACHE_STATIC_NAME = 'static-v0';
+var CACHE_DYNAMIC_NAME = 'dynamic-v0';
 
 self.addEventListener('install', function(event) {
   console.log('[OHIOH]: Installing ServiceWorker...',event);
@@ -37,19 +38,9 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function (event) {
   event.respondWith(
-      caches.open(CACHE_STATIC_NAME)
-          .then(function(cache) {
-              cache.match(event.request)
-                  .then( function(cacheResponse) {
-                      if(cacheResponse)
-                          return cacheResponse
-                      else
-                          return fetch(event.request)
-                              .then(function(networkResponse) {
-                                  cache.put(event.request, networkResponse.clone())
-                                  return networkResponse
-                              })
-                  })
-          })
-  )
+    caches.match(event.request).then(function (response) {
+      return response || fetch(event.request);
+    }),
+  );
 });
+
