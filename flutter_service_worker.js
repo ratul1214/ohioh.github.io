@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vid-voter-v3'
+const CACHE_NAME = 'OHIOH-Cache-v4'
 const URLS_CACHE_ONLY = [
     // css and js
     // font-awesome
