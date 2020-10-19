@@ -53,12 +53,16 @@ function beforeInstallPrompt( evt ) {
 
 
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', function() {
+//     navigator.serviceWorker.register('/flutter_service_worker.js');
+//   });
+//   console.log('[OHIOH]:Service Worker registered.');
+// }
+
+if('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/flutter_service_worker.js');
-  });
-  console.log('[OHIOH]:Service Worker registered.');
-}
+};
 
 if ( "onbeforeinstallprompt" in window ) {
   window.addEventListener( "beforeinstallprompt", beforeInstallPrompt );
