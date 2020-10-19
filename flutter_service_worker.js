@@ -1,8 +1,8 @@
 const CACHE_NAME = "OHIOH-Cache-v2";
 const URLS_CACHE_ONLY = [
     "/",
-    "/index.html",
-    "/offline.html"
+    "index.html",
+    "offline.html"
 ];
 
 const URLS_OVER_NETWORK_WITH_CACHE_FALLBACK = [
