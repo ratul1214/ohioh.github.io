@@ -61,7 +61,14 @@ function beforeInstallPrompt( evt ) {
 // }
 
 if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/flutter_service_worker.js');
+    // Register the service worker if ('serviceWorker' in navigator) {   3
+     navigator.serviceWorker.register('/flutter_service_worker.js').then(function(registration) {
+    // Registration was successful
+    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+}).catch(function(err) {                                             4
+    // registration failed :(
+    console.log('ServiceWorker registration failed: ', err);
+    });
 };
 
 if ( "onbeforeinstallprompt" in window ) {
