@@ -17,7 +17,6 @@
 
 var deferredPrompt; //before install needed
 var _beforeInstallPrompt;
-
 var box = document.querySelector('.box');
 var button = document.querySelector('button');
 // function showAddToHomeScreen() { var a2hsBtn = document.querySelector(".ad2hs-prompt"); a2hsBtn.style.display = "block"; a2hsBtn.addEventListener("click", addToHomeScreen); }
@@ -53,9 +52,6 @@ function beforeInstallPrompt( evt ) {
 
 
 
-if ( "onbeforeinstallprompt" in window ) {
-  window.addEventListener( "beforeinstallprompt", beforeInstallPrompt );
-  }
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -63,6 +59,11 @@ if ('serviceWorker' in navigator) {
   });
   console.log('[OHIOH]:Service Worker registered.');
 }
+
+if ( "onbeforeinstallprompt" in window ) {
+  window.addEventListener( "beforeinstallprompt", beforeInstallPrompt );
+  }
+
 
 
 // btnAdd.addEventListener('click', (e) => {
