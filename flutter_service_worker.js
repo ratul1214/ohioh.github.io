@@ -26,6 +26,23 @@ self.addEventListener("install", function(event) {
     );
 });
 
+self.addEventListener('activate', function(event) {
+  console.log('[OHIOH]:👍 ServiceWorker activated.',event);
+  event.waitUntil(
+    caches.keys()
+      .then(function(keyList) {
+        return Promise.all(keyList.map(function(key) {
+          if (key !== URLS_CACHE_ONLY && key !== URLS_OVER_NETWORK_WITH_CACHE_FALLBACK) {
+            console.log('[OHIOH]:👍 Removing old cache.', key);
+            return caches.delete(key);
+          }
+        }));
+      })
+  );
+  // stabilize the sw
+  return self.clients.claim();
+});
+
 self.addEventListener("fetch", function (event) {
     const requestURL = new URL(event.request.url);
 
